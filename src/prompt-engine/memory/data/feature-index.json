@@ -1,0 +1,249 @@
+{
+  "remember-me": {
+    "files": [
+      "src/views/LoginView.vue",
+      "src/composables/useAuth.ts",
+      "src/stores/auth.store.ts"
+    ],
+    "components": ["BaseCheckbox"],
+    "routes": ["/login"],
+    "pattern": "auth_form_field",
+    "tags": ["login", "remember", "session", "auth"],
+    "lastModified": "2026-05-20"
+  },
+  "forgot-password": {
+    "files": ["src/views/ForgotPasswordView.vue"],
+    "components": ["BaseInput", "BaseButton"],
+    "routes": ["/forgot-password"],
+    "pattern": "auth_form_field",
+    "tags": ["password", "reset", "auth"]
+  },
+  "landing-page": {
+    "files": [
+      "src/views/marketing/LandingView.vue",
+      "src/layouts/MarketingLayout.vue",
+      "src/router/marketing.routes.ts"
+    ],
+    "components": [
+      "LandingNavbar",
+      "LandingHero",
+      "LandingFooter",
+      "LandingSectionFeatures"
+    ],
+    "routes": ["/"],
+    "pattern": "marketing_page",
+    "tags": ["landing", "homepage", "marketing", "website", "public"]
+  },
+  "landing-hero": {
+    "files": [
+      "src/views/marketing/LandingView.vue",
+      "src/components/marketing/LandingHero.vue"
+    ],
+    "components": ["LandingHero", "BaseButton"],
+    "routes": ["/"],
+    "pattern": "marketing_section",
+    "tags": ["hero", "headline", "banner", "above the fold", "cta"]
+  },
+  "landing-features": {
+    "files": [
+      "src/views/marketing/LandingView.vue",
+      "src/components/marketing/LandingSectionFeatures.vue",
+      "src/components/marketing/LandingFeatureCard.vue"
+    ],
+    "components": ["LandingSectionFeatures", "LandingFeatureCard", "BaseCard"],
+    "routes": ["/", "/features"],
+    "pattern": "marketing_section",
+    "tags": ["features", "benefits", "highlights", "grid"]
+  },
+  "landing-pricing": {
+    "files": [
+      "src/views/marketing/PricingView.vue",
+      "src/components/marketing/LandingPricingTable.vue",
+      "src/components/marketing/LandingPricingCard.vue"
+    ],
+    "components": ["LandingPricingTable", "LandingPricingCard", "BaseButton"],
+    "routes": ["/pricing"],
+    "pattern": "marketing_section",
+    "tags": ["pricing", "plans", "subscription", "tiers", "price"]
+  },
+  "landing-testimonials": {
+    "files": [
+      "src/views/marketing/LandingView.vue",
+      "src/components/marketing/LandingTestimonials.vue",
+      "src/components/marketing/LandingTestimonialCard.vue"
+    ],
+    "components": ["LandingTestimonials", "LandingTestimonialCard"],
+    "routes": ["/"],
+    "pattern": "marketing_section",
+    "tags": ["testimonials", "reviews", "social proof", "quotes"]
+  },
+  "landing-cta": {
+    "files": [
+      "src/views/marketing/LandingView.vue",
+      "src/components/marketing/LandingCtaBanner.vue"
+    ],
+    "components": ["LandingCtaBanner", "BaseButton"],
+    "routes": ["/"],
+    "pattern": "marketing_section",
+    "tags": ["cta", "call to action", "signup", "get started", "convert"]
+  },
+  "landing-faq": {
+    "files": [
+      "src/views/marketing/LandingView.vue",
+      "src/components/marketing/LandingFaq.vue",
+      "src/components/marketing/LandingFaqItem.vue"
+    ],
+    "components": ["LandingFaq", "LandingFaqItem"],
+    "routes": ["/", "/faq"],
+    "pattern": "marketing_section",
+    "tags": ["faq", "questions", "accordion", "help"]
+  },
+  "landing-navbar": {
+    "files": [
+      "src/layouts/MarketingLayout.vue",
+      "src/components/marketing/LandingNavbar.vue"
+    ],
+    "components": ["LandingNavbar", "BaseButton"],
+    "routes": ["/", "/pricing", "/features", "/about", "/contact"],
+    "pattern": "marketing_navigation",
+    "tags": ["navbar", "header", "navigation", "menu", "logo"]
+  },
+  "landing-footer": {
+    "files": [
+      "src/layouts/MarketingLayout.vue",
+      "src/components/marketing/LandingFooter.vue"
+    ],
+    "components": ["LandingFooter"],
+    "routes": ["/"],
+    "pattern": "marketing_navigation",
+    "tags": ["footer", "links", "copyright", "social"]
+  },
+  "contact-form": {
+    "files": [
+      "src/views/marketing/ContactView.vue",
+      "src/components/marketing/ContactForm.vue",
+      "src/composables/useContactForm.ts"
+    ],
+    "components": ["ContactForm", "BaseInput", "BaseButton"],
+    "routes": ["/contact"],
+    "pattern": "marketing_form",
+    "tags": ["contact", "form", "email", "message", "lead"]
+  },
+  "about-page": {
+    "files": [
+      "src/views/marketing/AboutView.vue",
+      "src/components/marketing/LandingSectionStory.vue"
+    ],
+    "components": ["LandingSectionStory", "BaseCard"],
+    "routes": ["/about"],
+    "pattern": "marketing_page",
+    "tags": ["about", "story", "team", "mission"]
+  },
+  "app-shell": {
+    "files": [
+      "src/layouts/AppLayout.vue",
+      "src/router/app.routes.ts",
+      "src/components/app/AppShell.vue"
+    ],
+    "components": ["AppShell", "AppSidebar", "AppHeader"],
+    "routes": ["/app"],
+    "pattern": "in_app_layout",
+    "tags": ["in-app", "inapp", "application", "dashboard shell", "layout"]
+  },
+  "app-sidebar": {
+    "files": [
+      "src/layouts/AppLayout.vue",
+      "src/components/app/AppSidebar.vue",
+      "src/components/app/AppNavItem.vue",
+      "src/composables/useAppNavigation.ts"
+    ],
+    "components": ["AppSidebar", "AppNavItem"],
+    "routes": ["/app", "/app/dashboard", "/app/settings"],
+    "pattern": "in_app_navigation",
+    "tags": ["sidebar", "side nav", "navigation", "menu", "drawer"]
+  },
+  "app-header": {
+    "files": [
+      "src/layouts/AppLayout.vue",
+      "src/components/app/AppHeader.vue",
+      "src/components/app/AppUserMenu.vue",
+      "src/components/app/AppNotificationBell.vue"
+    ],
+    "components": ["AppHeader", "AppUserMenu", "AppNotificationBell"],
+    "routes": ["/app"],
+    "pattern": "in_app_navigation",
+    "tags": ["header", "top bar", "toolbar", "breadcrumb"]
+  },
+  "app-dashboard": {
+    "files": [
+      "src/views/app/DashboardView.vue",
+      "src/components/app/AppStatCard.vue",
+      "src/components/app/AppWidgetGrid.vue",
+      "src/composables/useDashboardStats.ts"
+    ],
+    "components": ["AppStatCard", "AppWidgetGrid", "BaseCard"],
+    "routes": ["/app/dashboard"],
+    "pattern": "in_app_page",
+    "tags": ["dashboard", "overview", "stats", "widgets", "metrics"]
+  },
+  "app-data-table": {
+    "files": [
+      "src/components/app/AppDataTable.vue",
+      "src/composables/useDataTable.ts"
+    ],
+    "components": ["AppDataTable", "BaseButton"],
+    "routes": ["/app/dashboard"],
+    "pattern": "in_app_data",
+    "tags": ["table", "list", "rows", "pagination", "sort", "filter"]
+  },
+  "app-empty-state": {
+    "files": ["src/components/app/AppEmptyState.vue"],
+    "components": ["AppEmptyState", "BaseButton"],
+    "routes": ["/app/dashboard"],
+    "pattern": "in_app_ui",
+    "tags": ["empty", "no data", "placeholder", "zero state"]
+  },
+  "app-notifications": {
+    "files": [
+      "src/views/app/NotificationsView.vue",
+      "src/components/app/AppNotificationList.vue",
+      "src/components/app/AppNotificationBell.vue",
+      "src/stores/notifications.store.ts"
+    ],
+    "components": ["AppNotificationList", "AppNotificationBell"],
+    "routes": ["/app/notifications"],
+    "pattern": "in_app_page",
+    "tags": ["notifications", "alerts", "bell", "inbox"]
+  },
+  "app-profile": {
+    "files": [
+      "src/views/app/ProfileView.vue",
+      "src/components/app/AppProfileForm.vue",
+      "src/composables/useProfile.ts"
+    ],
+    "components": ["AppProfileForm", "BaseInput", "BaseButton"],
+    "routes": ["/app/profile"],
+    "pattern": "in_app_form",
+    "tags": ["profile", "account", "avatar", "user settings"]
+  },
+  "app-settings": {
+    "files": [
+      "src/views/app/SettingsView.vue",
+      "src/components/app/AppSettingsPanel.vue"
+    ],
+    "components": ["AppSettingsPanel", "BaseCheckbox", "BaseInput"],
+    "routes": ["/app/settings"],
+    "pattern": "in_app_page",
+    "tags": ["settings", "preferences", "configuration", "toggle"]
+  },
+  "app-modal-drawer": {
+    "files": [
+      "src/components/app/AppModal.vue",
+      "src/components/app/AppDrawer.vue"
+    ],
+    "components": ["AppModal", "AppDrawer", "BaseButton"],
+    "routes": ["/app"],
+    "pattern": "in_app_overlay",
+    "tags": ["modal", "drawer", "dialog", "overlay", "panel"]
+  }
+}

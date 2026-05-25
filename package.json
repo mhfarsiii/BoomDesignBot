@@ -1,0 +1,27 @@
+{
+  "name": "telegram-claude-gitlab-pipeline",
+  "version": "1.0.0",
+  "description": "Telegram bot -> Claude AI -> GitLab API pipeline",
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "demo:prompt": "tsx src/prompt-engine/scripts/demo-prompt.ts"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "telegraf": "^4.16.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

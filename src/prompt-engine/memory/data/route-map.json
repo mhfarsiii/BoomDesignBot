@@ -1,0 +1,113 @@
+{
+  "/": {
+    "component": "LandingView",
+    "layout": "MarketingLayout",
+    "guard": "public",
+    "relatedFeatures": [
+      "landing-page",
+      "landing-hero",
+      "landing-features",
+      "landing-testimonials",
+      "landing-cta",
+      "landing-faq",
+      "landing-navbar",
+      "landing-footer"
+    ]
+  },
+  "/features": {
+    "component": "FeaturesView",
+    "layout": "MarketingLayout",
+    "guard": "public",
+    "relatedFeatures": ["landing-features", "landing-navbar"]
+  },
+  "/pricing": {
+    "component": "PricingView",
+    "layout": "MarketingLayout",
+    "guard": "public",
+    "relatedFeatures": ["landing-pricing", "landing-cta", "landing-navbar"]
+  },
+  "/about": {
+    "component": "AboutView",
+    "layout": "MarketingLayout",
+    "guard": "public",
+    "relatedFeatures": ["about-page", "landing-navbar", "landing-footer"]
+  },
+  "/contact": {
+    "component": "ContactView",
+    "layout": "MarketingLayout",
+    "guard": "public",
+    "relatedFeatures": ["contact-form", "landing-navbar", "landing-footer"]
+  },
+  "/faq": {
+    "component": "FaqView",
+    "layout": "MarketingLayout",
+    "guard": "public",
+    "relatedFeatures": ["landing-faq", "landing-navbar"]
+  },
+  "/login": {
+    "component": "LoginView",
+    "layout": "AuthLayout",
+    "guard": "guest-only",
+    "relatedFeatures": ["remember-me", "forgot-password"]
+  },
+  "/signup": {
+    "component": "SignupView",
+    "layout": "AuthLayout",
+    "guard": "guest-only",
+    "relatedFeatures": ["landing-cta"]
+  },
+  "/forgot-password": {
+    "component": "ForgotPasswordView",
+    "layout": "AuthLayout",
+    "guard": "guest-only",
+    "relatedFeatures": ["forgot-password"]
+  },
+  "/app": {
+    "component": "AppRedirectView",
+    "layout": "AppLayout",
+    "guard": "auth-required",
+    "relatedFeatures": ["app-shell"]
+  },
+  "/app/dashboard": {
+    "component": "DashboardView",
+    "layout": "AppLayout",
+    "guard": "auth-required",
+    "relatedFeatures": [
+      "app-dashboard",
+      "app-data-table",
+      "app-empty-state",
+      "app-sidebar",
+      "app-header"
+    ]
+  },
+  "/app/notifications": {
+    "component": "NotificationsView",
+    "layout": "AppLayout",
+    "guard": "auth-required",
+    "relatedFeatures": ["app-notifications", "app-empty-state"]
+  },
+  "/app/profile": {
+    "component": "ProfileView",
+    "layout": "AppLayout",
+    "guard": "auth-required",
+    "relatedFeatures": ["app-profile", "app-header"]
+  },
+  "/app/settings": {
+    "component": "SettingsView",
+    "layout": "AppLayout",
+    "guard": "auth-required",
+    "relatedFeatures": ["app-settings", "app-sidebar"]
+  },
+  "/dashboard": {
+    "component": "DashboardView",
+    "layout": "DashboardLayout",
+    "guard": "auth-required",
+    "relatedFeatures": ["app-dashboard"]
+  },
+  "/settings": {
+    "component": "SettingsView",
+    "layout": "DashboardLayout",
+    "guard": "auth-required",
+    "relatedFeatures": ["app-settings"]
+  }
+}

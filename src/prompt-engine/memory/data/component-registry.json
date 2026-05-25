@@ -1,0 +1,167 @@
+{
+  "BaseButton": {
+    "path": "src/components/BaseButton.vue",
+    "props": ["label", "variant", "disabled", "loading", "size"],
+    "usedIn": ["LoginView", "SignupView", "LandingHero", "LandingCtaBanner", "AppEmptyState"]
+  },
+  "BaseInput": {
+    "path": "src/components/BaseInput.vue",
+    "props": ["modelValue", "label", "type", "error", "placeholder"],
+    "usedIn": ["LoginView", "SignupView", "ContactForm", "AppProfileForm"]
+  },
+  "BaseCheckbox": {
+    "path": "src/components/BaseCheckbox.vue",
+    "props": ["modelValue", "label", "disabled"],
+    "usedIn": ["LoginView", "SignupView", "AppSettingsPanel"]
+  },
+  "BaseCard": {
+    "path": "src/components/BaseCard.vue",
+    "props": ["title", "padding", "shadow", "bordered"],
+    "usedIn": ["LandingFeatureCard", "LandingPricingCard", "AppStatCard", "AboutView"]
+  },
+  "LandingNavbar": {
+    "path": "src/components/marketing/LandingNavbar.vue",
+    "props": ["links", "ctaLabel", "logoSrc"],
+    "usedIn": ["MarketingLayout", "LandingView", "PricingView"]
+  },
+  "LandingHero": {
+    "path": "src/components/marketing/LandingHero.vue",
+    "props": ["title", "subtitle", "primaryCta", "secondaryCta", "imageSrc"],
+    "usedIn": ["LandingView"]
+  },
+  "LandingFooter": {
+    "path": "src/components/marketing/LandingFooter.vue",
+    "props": ["columns", "socialLinks", "copyright"],
+    "usedIn": ["MarketingLayout"]
+  },
+  "LandingSectionFeatures": {
+    "path": "src/components/marketing/LandingSectionFeatures.vue",
+    "props": ["heading", "features"],
+    "usedIn": ["LandingView", "FeaturesView"]
+  },
+  "LandingFeatureCard": {
+    "path": "src/components/marketing/LandingFeatureCard.vue",
+    "props": ["icon", "title", "description"],
+    "usedIn": ["LandingSectionFeatures"]
+  },
+  "LandingPricingTable": {
+    "path": "src/components/marketing/LandingPricingTable.vue",
+    "props": ["plans", "highlightedPlanId"],
+    "usedIn": ["PricingView"]
+  },
+  "LandingPricingCard": {
+    "path": "src/components/marketing/LandingPricingCard.vue",
+    "props": ["name", "price", "features", "highlighted", "ctaLabel"],
+    "usedIn": ["LandingPricingTable"]
+  },
+  "LandingTestimonials": {
+    "path": "src/components/marketing/LandingTestimonials.vue",
+    "props": ["heading", "items"],
+    "usedIn": ["LandingView"]
+  },
+  "LandingTestimonialCard": {
+    "path": "src/components/marketing/LandingTestimonialCard.vue",
+    "props": ["quote", "author", "role", "avatarSrc"],
+    "usedIn": ["LandingTestimonials"]
+  },
+  "LandingCtaBanner": {
+    "path": "src/components/marketing/LandingCtaBanner.vue",
+    "props": ["title", "description", "ctaLabel", "variant"],
+    "usedIn": ["LandingView", "PricingView"]
+  },
+  "LandingFaq": {
+    "path": "src/components/marketing/LandingFaq.vue",
+    "props": ["heading", "items"],
+    "usedIn": ["LandingView", "FaqView"]
+  },
+  "LandingFaqItem": {
+    "path": "src/components/marketing/LandingFaqItem.vue",
+    "props": ["question", "answer", "defaultOpen"],
+    "usedIn": ["LandingFaq"]
+  },
+  "LandingSectionStory": {
+    "path": "src/components/marketing/LandingSectionStory.vue",
+    "props": ["title", "content", "imageSrc"],
+    "usedIn": ["AboutView"]
+  },
+  "ContactForm": {
+    "path": "src/components/marketing/ContactForm.vue",
+    "props": ["submitLabel"],
+    "usedIn": ["ContactView"]
+  },
+  "AppShell": {
+    "path": "src/components/app/AppShell.vue",
+    "props": ["sidebarCollapsed"],
+    "usedIn": ["AppLayout"]
+  },
+  "AppSidebar": {
+    "path": "src/components/app/AppSidebar.vue",
+    "props": ["items", "collapsed", "activeRoute"],
+    "usedIn": ["AppLayout", "AppShell"]
+  },
+  "AppNavItem": {
+    "path": "src/components/app/AppNavItem.vue",
+    "props": ["to", "icon", "label", "badge"],
+    "usedIn": ["AppSidebar"]
+  },
+  "AppHeader": {
+    "path": "src/components/app/AppHeader.vue",
+    "props": ["title", "showBreadcrumb"],
+    "usedIn": ["AppLayout", "AppShell"]
+  },
+  "AppUserMenu": {
+    "path": "src/components/app/AppUserMenu.vue",
+    "props": ["userName", "avatarSrc", "menuItems"],
+    "usedIn": ["AppHeader"]
+  },
+  "AppNotificationBell": {
+    "path": "src/components/app/AppNotificationBell.vue",
+    "props": ["count", "items"],
+    "usedIn": ["AppHeader"]
+  },
+  "AppStatCard": {
+    "path": "src/components/app/AppStatCard.vue",
+    "props": ["label", "value", "trend", "icon"],
+    "usedIn": ["DashboardView", "AppWidgetGrid"]
+  },
+  "AppWidgetGrid": {
+    "path": "src/components/app/AppWidgetGrid.vue",
+    "props": ["columns", "gap"],
+    "usedIn": ["DashboardView"]
+  },
+  "AppDataTable": {
+    "path": "src/components/app/AppDataTable.vue",
+    "props": ["columns", "rows", "sortable", "paginated"],
+    "usedIn": ["DashboardView"]
+  },
+  "AppEmptyState": {
+    "path": "src/components/app/AppEmptyState.vue",
+    "props": ["title", "description", "actionLabel"],
+    "usedIn": ["DashboardView", "NotificationsView"]
+  },
+  "AppNotificationList": {
+    "path": "src/components/app/AppNotificationList.vue",
+    "props": ["items", "emptyMessage"],
+    "usedIn": ["NotificationsView"]
+  },
+  "AppProfileForm": {
+    "path": "src/components/app/AppProfileForm.vue",
+    "props": ["initialValues"],
+    "usedIn": ["ProfileView"]
+  },
+  "AppSettingsPanel": {
+    "path": "src/components/app/AppSettingsPanel.vue",
+    "props": ["sections"],
+    "usedIn": ["SettingsView"]
+  },
+  "AppModal": {
+    "path": "src/components/app/AppModal.vue",
+    "props": ["modelValue", "title", "size"],
+    "usedIn": ["DashboardView", "SettingsView"]
+  },
+  "AppDrawer": {
+    "path": "src/components/app/AppDrawer.vue",
+    "props": ["modelValue", "title", "position"],
+    "usedIn": ["DashboardView"]
+  }
+}
