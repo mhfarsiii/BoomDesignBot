@@ -1,11 +1,17 @@
 import { Telegraf } from "telegraf";
+import type { AuthService } from "../../application/auth/auth.service";
 import { registerTelegramHandlers } from "../../delivery/telegram/handlers/register-handlers";
+import { createAuthorizationMiddleware } from "../../delivery/telegram/middleware/authorization.middleware";
 import type { BotContext } from "../../delivery/telegram/types/bot-context";
 import type { AppConfig } from "../../shared/config/app-config";
 import { getErrorMessage } from "../../shared/errors/get-error-message";
 
-export async function startTelegramBot(config: AppConfig): Promise<void> {
+export async function startTelegramBot(
+  config: AppConfig,
+  authService: AuthService,
+): Promise<void> {
   const bot = new Telegraf<BotContext>(config.telegramBotToken);
+  bot.use(createAuthorizationMiddleware(authService));
   registerTelegramHandlers(bot, config);
 
   process.once("SIGINT", () => {
