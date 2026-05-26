@@ -1,5 +1,5 @@
 import fs from "fs";
-import { projectPath } from "../../paths/resolve-paths";
+import { resolveProjectPath } from "../../paths/resolve-paths";
 
 const MAX_SNIPPET_LINES = 50;
 const SNIPPET_WINDOW = 25;
@@ -33,12 +33,13 @@ function extractSnippet(
 export function getFileContext(
   filePath: string,
   keywords: string[] = [],
+  targetProjectPath: string,
 ): string {
   if (!filePath) {
     return "File Context:\nNo target file specified. Resolve path in Analyze phase.";
   }
 
-  const absolutePath = projectPath(filePath);
+  const absolutePath = resolveProjectPath(targetProjectPath, filePath);
 
   if (!fs.existsSync(absolutePath)) {
     return `File Context:

@@ -8,13 +8,15 @@
     "dev": "tsx src/main.ts",
     "build": "tsc",
     "start": "node dist/main.js",
-    "demo:prompt": "tsx src/prompt-engine/scripts/demo-prompt.ts"
+    "demo:prompt": "tsx src/prompt-engine/scripts/demo-prompt.ts",
+    "smoke:mcp": "tsx src/scripts/mcp-smoke-test.ts"
   },
   "engines": {
     "node": ">=18.0.0"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "telegraf": "^4.16.3"

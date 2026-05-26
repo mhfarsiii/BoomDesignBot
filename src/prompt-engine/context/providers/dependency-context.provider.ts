@@ -1,8 +1,8 @@
 import fs from "fs";
-import { projectPath } from "../../paths/resolve-paths";
+import { resolveProjectPath } from "../../paths/resolve-paths";
 
-export function getDependencies(): string {
-  const pkgPath = projectPath("package.json");
+export function getDependencies(targetProjectPath: string): string {
+  const pkgPath = resolveProjectPath(targetProjectPath, "package.json");
 
   if (!fs.existsSync(pkgPath)) {
     return "Dependencies:\npackage.json not found.";

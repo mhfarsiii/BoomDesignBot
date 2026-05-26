@@ -1,4 +1,6 @@
+import path from "path";
 import type { AppConfig } from "../../shared/config/app-config";
+import { PROJECT_ROOT } from "../../prompt-engine/paths/resolve-paths";
 
 export function loadAppConfig(): AppConfig {
   const required: Array<[keyof AppConfig, string | undefined]> = [
@@ -21,11 +23,14 @@ export function loadAppConfig(): AppConfig {
   return {
     telegramBotToken: process.env.TELEGRAM_BOT_TOKEN!,
     anthropicApiKey: process.env.ANTHROPIC_API_KEY!,
-    claudeModel: process.env.CLAUDE_MODEL ?? "claude-sonnet-4-20250514",
+    claudeModel: process.env.CLAUDE_MODEL ?? "claude-haiku-4-5",
     gitlabToken: process.env.GITLAB_TOKEN!,
     gitlabBaseUrl:
       process.env.GITLAB_BASE_URL ?? "https://gitlab.com/api/v4",
     gitlabProjectId: process.env.GITLAB_PROJECT_ID!,
     gitlabDefaultBranch: process.env.GITLAB_DEFAULT_BRANCH ?? "main",
+    targetProjectPath: path.resolve(
+      process.env.TARGET_PROJECT_PATH ?? PROJECT_ROOT,
+    ),
   };
 }

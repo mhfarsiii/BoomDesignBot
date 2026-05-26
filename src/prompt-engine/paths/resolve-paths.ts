@@ -17,3 +17,11 @@ export function memoryPath(...segments: string[]) {
 export function projectPath(...segments: string[]) {
   return path.join(PROJECT_ROOT, ...segments);
 }
+
+/** Resolve a path inside an arbitrary target Vue project root. */
+export function resolveProjectPath(
+  targetProjectRoot: string,
+  ...segments: string[]
+): string {
+  return path.join(path.resolve(targetProjectRoot), ...segments);
+}

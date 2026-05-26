@@ -1,8 +1,8 @@
 import fs from "fs";
-import { projectPath } from "../paths/resolve-paths";
+import { resolveProjectPath } from "../paths/resolve-paths";
 
-export function scanPackageJson(): string {
-  const pkgPath = projectPath("package.json");
+export function scanPackageJson(targetProjectPath: string): string {
+  const pkgPath = resolveProjectPath(targetProjectPath, "package.json");
 
   if (!fs.existsSync(pkgPath)) {
     return "Project Context:\npackage.json not found.";

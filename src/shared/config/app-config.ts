@@ -10,4 +10,6 @@ export interface AppConfig {
   gitlabBaseUrl: string;
   gitlabProjectId: string;
   gitlabDefaultBranch: string;
+  /** Absolute path to the target Vue repo (cloned on VPS). */
+  targetProjectPath: string;
 }

@@ -10,7 +10,10 @@ export async function startTelegramBot(
   config: AppConfig,
   authService: AuthService,
 ): Promise<void> {
-  const bot = new Telegraf<BotContext>(config.telegramBotToken);
+  const bot = new Telegraf<BotContext>(config.telegramBotToken, {
+    // Claude + GitLab MCP tool chains (branch → commit → MR) often exceed Telegraf's 90s default.
+    handlerTimeout: 300_000,
+  });
   bot.use(createAuthorizationMiddleware(authService));
   registerTelegramHandlers(bot, config);
 

@@ -25,6 +25,7 @@ export async function buildContext(
   designerPrompt: string,
   history: string[] | FeatureHistoryEntry[],
   filePath: string,
+  targetProjectPath: string,
 ): Promise<string> {
   const intentResult = classifyIntent(designerPrompt, filePath);
   const blocks = resolveContextBlocks(intentResult.intents);
@@ -32,8 +33,12 @@ export async function buildContext(
 
   sections.push(getScopeContext(designerPrompt, intentResult, filePath));
 
-  if (blocks.has("project")) sections.push(scanPackageJson());
-  if (blocks.has("dependency")) sections.push(getDependencies());
+  if (blocks.has("project")) {
+    sections.push(scanPackageJson(targetProjectPath));
+  }
+  if (blocks.has("dependency")) {
+    sections.push(getDependencies(targetProjectPath));
+  }
   if (blocks.has("auth")) sections.push(getAuthContext());
   if (blocks.has("route")) sections.push(getRouteContext());
   if (blocks.has("component")) sections.push(getComponentContext());
@@ -45,7 +50,11 @@ export async function buildContext(
   }
   if (blocks.has("file")) {
     sections.push(
-      getFileContext(filePath, snippetKeywords(designerPrompt)),
+      getFileContext(
+        filePath,
+        snippetKeywords(designerPrompt),
+        targetProjectPath,
+      ),
     );
   }
 

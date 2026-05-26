@@ -61,9 +61,21 @@ export type GetSystemPromptConfig = Omit<AiConfig, "folderStructure"> & {
 export interface BuildPromptInput {
   designerPrompt: string;
   history?: string[] | FeatureHistoryEntry[];
-  filePath: string;
+  filePath?: string;
   /** Absolute path to the target Vue project (e.g. on the VPS). */
   targetProjectPath: string;
+}
+
+/** Structured prompt parts for Claude Messages API (system vs user separation). */
+export interface AssembledPrompt {
+  system: string;
+  userMessage: string;
+  context: string;
+  designerPrompt: string;
+  filePath: string;
+  targetProjectPath: string;
+  intents: Intent[];
+  feature: string;
 }
 
 export interface MemoryUpdateInput {

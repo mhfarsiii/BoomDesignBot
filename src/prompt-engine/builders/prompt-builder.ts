@@ -1,11 +1,14 @@
 import fs from "fs";
+import { classifyIntent } from "../classifiers/intent-classifier";
 import { buildContext } from "../context/context-manager";
 import { scanProjectStructure } from "../scanners/project-structure.scanner";
 import type {
   AiConfig,
+  AssembledPrompt,
   BuildPromptInput,
   GetSystemPromptConfig,
 } from "../types/prompt-engine.types";
+import { resolveTargetFilePath } from "../utils/resolve-target-file-path";
 import { promptEnginePath } from "../paths/resolve-paths";
 
 function loadConfig(): AiConfig {
@@ -53,19 +56,51 @@ export async function getSystemPromptFromFile(
   return getSystemPrompt({ targetProjectPath, ...staticConfig });
 }
 
-export async function buildPrompt(input: BuildPromptInput): Promise<string> {
-  const { designerPrompt, history = [], filePath, targetProjectPath } = input;
+/**
+ * Full prompt-engine assembly: system prompt + intent-driven context modules + designer request.
+ * Returns separated system/user payloads for the Claude Messages API.
+ */
+export async function assemblePrompt(
+  input: BuildPromptInput,
+): Promise<AssembledPrompt> {
+  const {
+    designerPrompt,
+    history = [],
+    targetProjectPath,
+    filePath: explicitFilePath = "",
+  } = input;
 
-  const systemPrompt = await getSystemPromptFromFile(targetProjectPath);
-  const context = await buildContext(designerPrompt, history, filePath);
+  const filePath = resolveTargetFilePath(designerPrompt, explicitFilePath);
+  const intentResult = classifyIntent(designerPrompt, filePath);
 
-  return `${systemPrompt}
+  const [system, context] = await Promise.all([
+    getSystemPromptFromFile(targetProjectPath),
+    buildContext(designerPrompt, history, filePath, targetProjectPath),
+  ]);
 
---- Context ---
+  const userMessage = `--- Context ---
 ${context}
 
 --- Designer Request ---
 ${designerPrompt}`;
+
+  return {
+    system,
+    userMessage,
+    context,
+    designerPrompt,
+    filePath,
+    targetProjectPath,
+    intents: intentResult.intents,
+    feature: intentResult.feature,
+  };
+}
+
+export async function buildPrompt(input: BuildPromptInput): Promise<string> {
+  const assembled = await assemblePrompt(input);
+  return `${assembled.system}
+
+${assembled.userMessage}`;
 }
 
 /** @deprecated Use buildPrompt({ designerPrompt, history, filePath, targetProjectPath }) */

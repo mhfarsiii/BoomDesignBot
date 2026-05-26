@@ -11,47 +11,65 @@ import type {
   ToolUseBlock,
 } from "@anthropic-ai/sdk/resources/messages/messages.mjs";
 import {
-  executeGitLabTool,
   formatToolResultForClaude,
-  GITLAB_TOOLS,
   type GitLabMergeRequestResponse,
   type ToolExecutionResult,
 } from "../../../integrations/gitlab/index";
-import { getSystemPromptFromFile } from "../../../prompt-engine/builders/prompt-builder";
-import { PROJECT_ROOT } from "../../../prompt-engine/paths/resolve-paths";
+import type {
+  CommitCodeToolInput,
+  CreateMergeRequestToolInput,
+} from "../../../integrations/gitlab/types/gitlab-tool.types";
+import { syncLocalRepository } from "../../../integrations/git/sync-local-repository";
+import { assemblePrompt } from "../../../prompt-engine/builders/prompt-builder";
+import { syncMemoryFromCommits } from "./sync-memory-from-tool-results";
 import type { AppConfig } from "../../../shared/config/app-config";
 import { getErrorMessage } from "../../../shared/errors/get-error-message";
+import type { ClaudeAgentRequest } from "./types/claude-agent-request";
 import type { ClaudeAgentResult } from "./types/claude-agent-result";
+import type { McpToolRegistry } from "../../../integrations/mcp/mcp-tool-registry";
 
 const MAX_TOOL_ITERATIONS = 12;
 
 export class ClaudeAgent {
   private readonly client: Anthropic;
   private readonly config: AppConfig;
+  private readonly toolRegistry: McpToolRegistry<ToolExecutionResult>;
 
-  constructor(config: AppConfig) {
+  constructor(config: AppConfig, toolRegistry: McpToolRegistry<ToolExecutionResult>) {
     this.config = config;
     this.client = new Anthropic({ apiKey: config.anthropicApiKey });
+    this.toolRegistry = toolRegistry;
   }
 
   /**
-   * Process a user message through Claude with GitLab tool execution until completion.
+   * Process a designer request with full prompt-engine assembly and GitLab tools.
    */
-  async processUserMessage(userText: string): Promise<ClaudeAgentResult> {
-    const dynamicSystemPrompt = await getSystemPromptFromFile(PROJECT_ROOT);
+  async processUserMessage(
+    request: ClaudeAgentRequest,
+  ): Promise<ClaudeAgentResult> {
+    const assembled = await assemblePrompt({
+      designerPrompt: request.userText,
+      history: request.history ?? [],
+      filePath: request.filePath,
+      targetProjectPath: this.config.targetProjectPath,
+    });
 
-    const messages: MessageParam[] = [{ role: "user", content: userText }];
+    const messages: MessageParam[] = [
+      { role: "user", content: assembled.userMessage },
+    ];
 
     const toolResults: ToolExecutionResult[] = [];
+    const committedFilePaths: string[] = [];
     let mergeRequestUrl: string | null = null;
     let assistantMessage = "";
 
+    const tools = await this.toolRegistry.getAnthropicTools();
     for (let iteration = 0; iteration < MAX_TOOL_ITERATIONS; iteration++) {
       const response = await this.client.messages.create({
         model: this.config.claudeModel,
         max_tokens: 16_384,
-        system: dynamicSystemPrompt,
-        tools: GITLAB_TOOLS,
+        system: assembled.system,
+        tools,
         messages,
       });
 
@@ -89,15 +107,21 @@ export class ClaudeAgent {
           let result: ToolExecutionResult;
 
           try {
-            result = await executeGitLabTool(
-              this.config,
+            result = await this.toolRegistry.executeTool(
               toolUse.name,
               toolUse.input,
             );
           } catch (error: unknown) {
+            const knownTool =
+              toolUse.name === "create_branch" ||
+              toolUse.name === "commit_code" ||
+              toolUse.name === "create_merge_request";
             result = {
               ok: false,
-              tool: "create_branch",
+              tool: (knownTool ? toolUse.name : "create_branch") as
+                | "create_branch"
+                | "commit_code"
+                | "create_merge_request",
               error: `Tool executor crashed: ${getErrorMessage(error)}`,
             };
           }
@@ -106,11 +130,34 @@ export class ClaudeAgent {
 
           if (
             result.ok &&
+            toolUse.name === "commit_code" &&
+            toolUse.input &&
+            typeof toolUse.input === "object" &&
+            "file_path" in toolUse.input
+          ) {
+            const filePath = (toolUse.input as CommitCodeToolInput).file_path;
+            if (filePath) {
+              committedFilePaths.push(filePath);
+            }
+          }
+
+          if (
+            result.ok &&
             result.tool === "create_merge_request" &&
             "web_url" in result.data
           ) {
             mergeRequestUrl = (result.data as GitLabMergeRequestResponse)
               .web_url;
+
+            const sourceBranch = (
+              toolUse.input as CreateMergeRequestToolInput
+            ).source_branch;
+            if (sourceBranch) {
+              await syncLocalRepository(
+                this.config.targetProjectPath,
+                sourceBranch,
+              );
+            }
           }
 
           toolResultBlocks.push({
@@ -135,10 +182,21 @@ export class ClaudeAgent {
       break;
     }
 
+    if (committedFilePaths.length > 0) {
+      syncMemoryFromCommits(
+        assembled.feature,
+        assembled.intents,
+        committedFilePaths,
+      );
+    }
+
     return {
       assistantMessage: assistantMessage || "No response from Claude.",
       mergeRequestUrl,
       toolResults,
+      feature: assembled.feature,
+      intents: assembled.intents,
+      committedFilePaths,
     };
   }
 }
