@@ -1,5 +1,5 @@
 /**
- * Entry point: Telegram bot receives messages, forwards to Claude + GitLab, replies with MR link.
+ * Entry point: Telegram bot receives messages, forwards to Claude + GitHub, replies with PR link.
  */
 
 import "dotenv/config";

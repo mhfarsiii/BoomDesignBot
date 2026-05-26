@@ -1,6 +1,6 @@
 /**
  * Anthropic Messages API handler with full tool-calling loop:
- * Claude requests tool -> GitLab executes -> tool_result fed back -> repeat until end_turn.
+ * Claude requests tool -> GitHub MCP executes -> tool_result fed back -> repeat until end_turn.
  */
 
 import Anthropic from "@anthropic-ai/sdk";
@@ -12,13 +12,14 @@ import type {
 } from "@anthropic-ai/sdk/resources/messages/messages.mjs";
 import {
   formatToolResultForClaude,
-  type GitLabMergeRequestResponse,
   type ToolExecutionResult,
-} from "../../../integrations/gitlab/index";
+} from "../../../integrations/github/index";
 import type {
   CommitCodeToolInput,
-  CreateMergeRequestToolInput,
-} from "../../../integrations/gitlab/types/gitlab-tool.types";
+  CreatePullRequestToolInput,
+  GitHubToolName,
+} from "../../../integrations/github/types/github-tool.types";
+import { extractChangeRequestUrl } from "../../../integrations/vcs/extract-change-request-url";
 import { syncLocalRepository } from "../../../integrations/git/sync-local-repository";
 import { assemblePrompt } from "../../../prompt-engine/builders/prompt-builder";
 import { syncMemoryFromCommits } from "./sync-memory-from-tool-results";
@@ -29,6 +30,15 @@ import type { ClaudeAgentResult } from "./types/claude-agent-result";
 import type { McpToolRegistry } from "../../../integrations/mcp/mcp-tool-registry";
 
 const MAX_TOOL_ITERATIONS = 12;
+const GITHUB_TOOL_NAMES = new Set<GitHubToolName>([
+  "create_branch",
+  "commit_code",
+  "create_pull_request",
+]);
+
+function isGitHubToolName(name: string): name is GitHubToolName {
+  return GITHUB_TOOL_NAMES.has(name as GitHubToolName);
+}
 
 export class ClaudeAgent {
   private readonly client: Anthropic;
@@ -42,7 +52,7 @@ export class ClaudeAgent {
   }
 
   /**
-   * Process a designer request with full prompt-engine assembly and GitLab tools.
+   * Process a designer request with full prompt-engine assembly and GitHub tools.
    */
   async processUserMessage(
     request: ClaudeAgentRequest,
@@ -60,7 +70,7 @@ export class ClaudeAgent {
 
     const toolResults: ToolExecutionResult[] = [];
     const committedFilePaths: string[] = [];
-    let mergeRequestUrl: string | null = null;
+    let pullRequestUrl: string | null = null;
     let assistantMessage = "";
 
     const tools = await this.toolRegistry.getAnthropicTools();
@@ -112,16 +122,11 @@ export class ClaudeAgent {
               toolUse.input,
             );
           } catch (error: unknown) {
-            const knownTool =
-              toolUse.name === "create_branch" ||
-              toolUse.name === "commit_code" ||
-              toolUse.name === "create_merge_request";
             result = {
               ok: false,
-              tool: (knownTool ? toolUse.name : "create_branch") as
-                | "create_branch"
-                | "commit_code"
-                | "create_merge_request",
+              tool: isGitHubToolName(toolUse.name)
+                ? toolUse.name
+                : "create_branch",
               error: `Tool executor crashed: ${getErrorMessage(error)}`,
             };
           }
@@ -143,14 +148,13 @@ export class ClaudeAgent {
 
           if (
             result.ok &&
-            result.tool === "create_merge_request" &&
-            "web_url" in result.data
+            result.tool === "create_pull_request" &&
+            "data" in result
           ) {
-            mergeRequestUrl = (result.data as GitLabMergeRequestResponse)
-              .web_url;
+            pullRequestUrl = extractChangeRequestUrl(result.data);
 
             const sourceBranch = (
-              toolUse.input as CreateMergeRequestToolInput
+              toolUse.input as CreatePullRequestToolInput
             ).source_branch;
             if (sourceBranch) {
               await syncLocalRepository(
@@ -192,7 +196,7 @@ export class ClaudeAgent {
 
     return {
       assistantMessage: assistantMessage || "No response from Claude.",
-      mergeRequestUrl,
+      pullRequestUrl,
       toolResults,
       feature: assembled.feature,
       intents: assembled.intents,

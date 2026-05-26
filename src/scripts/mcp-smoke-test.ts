@@ -1,20 +1,20 @@
 /**
  * MCP-only smoke test (no Telegram, no Claude).
- * Verifies: spawn GitLab MCP server → listTools → map tools for Anthropic.
+ * Verifies: spawn GitHub MCP server → listTools → map tools for Anthropic.
  *
  * Usage:
- *   MCP_DEBUG=1 npx tsx src/scripts/mcp-smoke-test.ts
+ *   MCP_DEBUG=1 npm run smoke:mcp
  */
 
 import "dotenv/config";
 import { loadAppConfig } from "../app/config/load-app-config";
-import { GitLabMcpToolClient } from "../integrations/gitlab/mcp-client";
+import { GitHubMcpToolClient } from "../integrations/github/mcp-client";
 
 async function main(): Promise<void> {
   const config = loadAppConfig();
-  const client = new GitLabMcpToolClient(config);
+  const client = new GitHubMcpToolClient(config);
 
-  console.error("[smoke] Connecting to GitLab MCP server and calling listTools…");
+  console.error("[smoke] Connecting to GitHub MCP server and calling listTools…");
   const tools = await client.getAnthropicTools();
 
   console.error("[smoke] Anthropic tools discovered:");
@@ -27,7 +27,7 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  const expected = ["create_branch", "commit_code", "create_merge_request"];
+  const expected = ["create_branch", "commit_code", "create_pull_request"];
   const names = tools.map((t) => t.name);
   const missing = expected.filter((n) => !names.includes(n));
   if (missing.length > 0) {
@@ -35,8 +35,7 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  console.error("[smoke] PASS: all expected GitLab MCP tools are discoverable.");
-  // MCP server subprocess stays alive on stdio; exit explicitly after discovery check.
+  console.error("[smoke] PASS: all expected GitHub MCP tools are discoverable.");
   process.exit(0);
 }
 

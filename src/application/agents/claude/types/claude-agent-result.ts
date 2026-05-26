@@ -1,4 +1,4 @@
-import type { ToolExecutionResult } from "../../../../integrations/gitlab/index";
+import type { ToolExecutionResult } from "../../../../integrations/github/index";
 import type {
   Intent,
 } from "../../../../prompt-engine/types/prompt-engine.types";
@@ -7,8 +7,8 @@ import type {
 export interface ClaudeAgentResult {
   /** Assistant text (Vue code explanation, status, etc.). */
   assistantMessage: string;
-  /** Populated when create_merge_request succeeds. */
-  mergeRequestUrl: string | null;
+  /** Populated when create_pull_request succeeds. */
+  pullRequestUrl: string | null;
   /** All tool runs performed in this turn. */
   toolResults: ToolExecutionResult[];
   /** Resolved feature slug from intent classifier (for history + memory). */

@@ -4,5 +4,5 @@
   "authStrategy": "JWT",
   "routingStrategy": "Vue Router",
   "folderStructure": "src/views | src/components | src/composables | src/stores | src/router | src/layouts",
-  "gitRules": "Conventional commits. One feature per commit. Do not force-push main."
+  "gitRules": "Use GitHub branches and pull requests. Conventional commits. One feature per commit. Do not force-push main."
 }

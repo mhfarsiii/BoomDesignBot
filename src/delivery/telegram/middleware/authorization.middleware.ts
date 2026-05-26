@@ -5,7 +5,7 @@ import type { BotContext } from "../types/bot-context";
 const ACCESS_DENIED_MESSAGE = "شما دسترسی ندارید";
 
 /**
- * Intercepts every update before handlers run. Unauthorized users never reach Claude/GitLab logic.
+ * Intercepts every update before handlers run. Unauthorized users never reach Claude/GitHub logic.
  */
 export function createAuthorizationMiddleware(
   authService: AuthService,

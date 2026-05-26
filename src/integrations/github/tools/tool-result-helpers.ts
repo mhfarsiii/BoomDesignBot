@@ -1,24 +1,25 @@
 import type {
-  GitLabBranchResponse,
-  GitLabCommitResponse,
-  GitLabMergeRequestResponse,
-} from "../types/gitlab-api.types";
-import type {
-  GitLabToolName,
+  GitHubBranchToolData,
+  GitHubCommitToolData,
+  GitHubPullRequestToolData,
+  GitHubToolName,
   ToolExecutionFailure,
   ToolExecutionResult,
   ToolExecutionSuccess,
-} from "../types/gitlab-tool.types";
+} from "../types/github-tool.types";
 
 export function toolSuccess(
-  tool: GitLabToolName,
-  data: GitLabBranchResponse | GitLabCommitResponse | GitLabMergeRequestResponse,
+  tool: GitHubToolName,
+  data:
+    | GitHubBranchToolData
+    | GitHubCommitToolData
+    | GitHubPullRequestToolData,
 ): ToolExecutionSuccess {
   return { ok: true, tool, data };
 }
 
 export function toolFailure(
-  tool: GitLabToolName,
+  tool: GitHubToolName,
   error: string,
 ): ToolExecutionFailure {
   return { ok: false, tool, error };

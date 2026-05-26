@@ -32,7 +32,7 @@ function runGitCommand(
 
 /**
  * Updates the read-only local clone to match the remote feature branch after
- * GitLab commits / MR creation. Failures are logged only — never thrown.
+ * GitHub commits / PR creation. Failures are logged only — never thrown.
  */
 export async function syncLocalRepository(
   targetProjectPath: string,

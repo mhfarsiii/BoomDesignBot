@@ -29,7 +29,7 @@ export async function handleTextMessage(
       ? conversationHistoryStore.getHistory(chatId)
       : [];
 
-  await ctx.reply("Working on your request (Claude + GitLab)…");
+  await ctx.reply("Working on your request (Claude + GitHub)…");
 
   try {
     const result = await runClaudeAgent(config, {
@@ -48,7 +48,7 @@ export async function handleTextMessage(
     }
 
     await ctx.reply(
-      formatReply(result.assistantMessage, result.mergeRequestUrl),
+      formatReply(result.assistantMessage, result.pullRequestUrl),
     );
   } catch (error: unknown) {
     await ctx.reply(`Unexpected error: ${getErrorMessage(error)}`);

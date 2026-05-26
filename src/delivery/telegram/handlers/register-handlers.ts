@@ -11,9 +11,9 @@ export function registerTelegramHandlers(
 ): void {
   bot.start(async (ctx) => {
     await ctx.reply(
-      "Vue 3 + GitLab bot ready.\n\n" +
+      "Vue 3 + GitHub bot ready.\n\n" +
         "Send a message describing the component or feature you want. " +
-        "I will generate Vue 3 Composition API code and push it to GitLab via a merge request.",
+        "I will generate Vue 3 Composition API code and push it to GitHub via a pull request.",
     );
   });
 

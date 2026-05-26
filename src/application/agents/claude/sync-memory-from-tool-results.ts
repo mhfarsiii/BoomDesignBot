@@ -2,7 +2,7 @@ import type { Intent } from "../../../prompt-engine/types/prompt-engine.types";
 import { updateFeatureIndex } from "../../../prompt-engine/memory/memory-updater";
 
 /**
- * Best-effort memory index update after successful GitLab commits.
+ * Best-effort memory index update after successful GitHub commits.
  */
 export function syncMemoryFromCommits(
   feature: string,

@@ -1,7 +1,7 @@
 {
   "name": "telegram-claude-gitlab-pipeline",
   "version": "1.0.0",
-  "description": "Telegram bot -> Claude AI -> GitLab API pipeline",
+  "description": "Telegram bot -> Claude AI -> GitHub API pipeline (MCP)",
   "type": "module",
   "main": "dist/main.js",
   "scripts": {

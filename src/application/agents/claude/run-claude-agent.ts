@@ -4,8 +4,8 @@ import { ClaudeAgent } from "./claude-agent";
 import type { ClaudeAgentRequest } from "./types/claude-agent-request";
 import type { ClaudeAgentResult } from "./types/claude-agent-result";
 import { McpToolRegistry } from "../../../integrations/mcp/mcp-tool-registry";
-import { GitLabMcpToolClient } from "../../../integrations/gitlab/mcp-client";
-import type { ToolExecutionResult } from "../../../integrations/gitlab/types/gitlab-tool.types";
+import { GitHubMcpToolClient } from "../../../integrations/github/mcp-client";
+import type { ToolExecutionResult } from "../../../integrations/github/types/github-tool.types";
 
 let toolRegistrySingleton:
   | McpToolRegistry<ToolExecutionResult>
@@ -21,11 +21,11 @@ export async function runClaudeAgent(
   try {
     if (!toolRegistrySingleton) {
       toolRegistrySingleton = new McpToolRegistry<ToolExecutionResult>([
-        new GitLabMcpToolClient(config),
+        new GitHubMcpToolClient(config),
       ]);
       if (process.env.MCP_DEBUG === "1") {
         console.error(
-          "[mcp] Initialized singleton McpToolRegistry with GitLabMcpToolClient",
+          "[mcp] Initialized singleton McpToolRegistry with GitHubMcpToolClient",
         );
       }
     }
@@ -35,7 +35,7 @@ export async function runClaudeAgent(
   } catch (error: unknown) {
     return {
       assistantMessage: `Claude agent error: ${getErrorMessage(error)}`,
-      mergeRequestUrl: null,
+      pullRequestUrl: null,
       toolResults: [],
       feature: "general",
       intents: ["general"],

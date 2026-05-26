@@ -5,49 +5,69 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import type { AppConfig } from "../../../shared/config/app-config";
 import { createBranch } from "../operations/create-branch.operation";
 import { commitCode } from "../operations/commit-code.operation";
-import { createMergeRequest } from "../operations/create-merge-request.operation";
+import { createPullRequest } from "../operations/create-pull-request.operation";
 
-function loadGitLabServerConfig(): AppConfig {
-  // The MCP server only needs GitLab settings + target path.
-  // We still populate the full AppConfig shape to keep existing operations unchanged.
-  const projectRoot = path.resolve(process.cwd());
-
-  const gitlabToken = process.env.GITLAB_TOKEN;
-  const gitlabProjectId = process.env.GITLAB_PROJECT_ID;
-  if (!gitlabToken || !gitlabProjectId) {
-    throw new Error(
-      "Missing required env for GitLab MCP server: GITLAB_TOKEN, GITLAB_PROJECT_ID",
-    );
+function parseGithubRepository(): { owner: string; repo: string } {
+  const combined = process.env.GITHUB_REPOSITORY?.trim();
+  if (combined?.includes("/")) {
+    const [owner, repo] = combined.split("/", 2);
+    if (owner && repo) {
+      return { owner, repo };
+    }
   }
+
+  const owner = process.env.GITHUB_OWNER?.trim();
+  const repo = process.env.GITHUB_REPO?.trim();
+  if (owner && repo) {
+    return { owner, repo };
+  }
+
+  throw new Error(
+    "Missing GitHub repo config. Set GITHUB_REPOSITORY=owner/repo or GITHUB_OWNER + GITHUB_REPO.",
+  );
+}
+
+function loadGitHubServerConfig(): AppConfig {
+  const projectRoot = path.resolve(process.cwd());
+  const githubToken = process.env.GITHUB_TOKEN;
+  if (!githubToken) {
+    throw new Error("Missing required env for GitHub MCP server: GITHUB_TOKEN");
+  }
+
+  const { owner, repo } = parseGithubRepository();
 
   return {
     telegramBotToken: process.env.TELEGRAM_BOT_TOKEN ?? "",
     anthropicApiKey: process.env.ANTHROPIC_API_KEY ?? "",
     claudeModel: process.env.CLAUDE_MODEL ?? "claude-haiku-4-5",
-    gitlabToken,
-    gitlabBaseUrl: process.env.GITLAB_BASE_URL ?? "https://gitlab.com/api/v4",
-    gitlabProjectId,
-    gitlabDefaultBranch: process.env.GITLAB_DEFAULT_BRANCH ?? "main",
+    githubToken,
+    githubOwner: owner,
+    githubRepo: repo,
+    githubApiBaseUrl:
+      process.env.GITHUB_API_BASE_URL ?? "https://api.github.com",
+    githubDefaultBranch: process.env.GITHUB_DEFAULT_BRANCH ?? "main",
     targetProjectPath: process.env.TARGET_PROJECT_PATH ?? projectRoot,
   };
 }
 
-export async function startGitLabMcpServer(): Promise<void> {
-  const config = loadGitLabServerConfig();
+export async function startGitHubMcpServer(): Promise<void> {
+  const config = loadGitHubServerConfig();
 
   const server = new McpServer(
-    { name: "gitlab-mcp-server", version: "1.0.0" },
-    // Capabilities are declared by McpServer internally; this option is still forwarded.
+    { name: "github-mcp-server", version: "1.0.0" },
     { capabilities: { tools: { listChanged: true } } },
   );
 
   server.registerTool(
     "create_branch",
     {
-      description: "Create a new Git branch in the configured GitLab project.",
+      description:
+        "Create a new Git branch in the configured GitHub repository.",
       inputSchema: z
         .object({
-          branch_name: z.string().describe("Name of the new branch (e.g. feature/add-widget)."),
+          branch_name: z
+            .string()
+            .describe("Name of the new branch (e.g. feature/add-widget)."),
           ref: z
             .string()
             .describe("Optional source ref (branch name or commit SHA).")
@@ -67,7 +87,7 @@ export async function startGitLabMcpServer(): Promise<void> {
     "commit_code",
     {
       description:
-        "Create or update a single file on a branch via a GitLab repository commit.",
+        "Create or update a single file on a branch via the GitHub Contents API.",
       inputSchema: z
         .object({
           branch_name: z.string().describe("Target branch for the commit."),
@@ -86,21 +106,21 @@ export async function startGitLabMcpServer(): Promise<void> {
   );
 
   server.registerTool(
-    "create_merge_request",
+    "create_pull_request",
     {
       description:
-        "Open a GitLab merge request from a feature branch into a target branch.",
+        "Open a GitHub pull request from a feature branch into a target branch.",
       inputSchema: z
         .object({
           source_branch: z.string().describe("Branch containing your changes."),
           target_branch: z.string().describe("Branch to merge into (e.g. main)."),
-          title: z.string().describe("Merge request title."),
-          description: z.string().describe("Merge request description (markdown)."),
+          title: z.string().describe("Pull request title."),
+          description: z.string().describe("Pull request description (markdown)."),
         })
         .strict(),
     },
     async (args) => {
-      const result = await createMergeRequest(config, args);
+      const result = await createPullRequest(config, args);
       return {
         content: [{ type: "text", text: JSON.stringify(result) }],
       };
@@ -110,8 +130,6 @@ export async function startGitLabMcpServer(): Promise<void> {
   const transport = new StdioServerTransport();
   await server.connect(transport);
 
-  // Keep the process alive while the stdio transport is active.
-  // The transport listeners are attached to stdin/stdout; this ensures Node won't exit.
   const shutdown = async () => {
     try {
       await server.close();
@@ -125,4 +143,3 @@ export async function startGitLabMcpServer(): Promise<void> {
 
   await new Promise(() => undefined);
 }
-

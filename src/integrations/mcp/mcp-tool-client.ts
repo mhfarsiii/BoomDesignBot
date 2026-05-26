@@ -3,7 +3,7 @@ import type { Tool } from "@anthropic-ai/sdk/resources/messages/messages.mjs";
 /**
  * Minimal contract for an MCP-backed tool execution provider.
  *
- * For now, Claude uses the returned `ToolExecutionResult` shape from the GitLab integration.
+ * For now, Claude uses the returned `ToolExecutionResult` shape from the GitHub integration.
  * Later, additional MCP servers can be added by implementing this interface and registering
  * the provider in a registry.
  */

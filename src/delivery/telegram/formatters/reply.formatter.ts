@@ -1,13 +1,13 @@
 export function formatReply(
   assistantMessage: string,
-  mergeRequestUrl: string | null,
+  pullRequestUrl: string | null,
 ): string {
   const parts: string[] = [assistantMessage.trim()];
 
-  if (mergeRequestUrl) {
+  if (pullRequestUrl) {
     parts.push("");
     parts.push("---");
-    parts.push(`Merge Request: ${mergeRequestUrl}`);
+    parts.push(`Pull Request: ${pullRequestUrl}`);
   }
 
   const full = parts.join("\n");
